@@ -1,0 +1,23 @@
+[project]
+name = "counting-mlops"
+version = "0.1.0"
+description = "Operaciones de MLOps para estrategias de conteo de objetos en video"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "lap>=0.5.12",
+    "modal>=1.4.3",
+    "pyyaml>=6.0.3",
+    "torch==2.6.0",
+    "torchvision==0.21.0",
+    "ultralytics>=8.4.51",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
+torchvision = { index = "pytorch-cu124" }
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true

@@ -1,0 +1,23 @@
+name: blueberry_tiled # identificador del experimento, define la subcarpeta runs/<name>/
+type:
+  evaluate # count | evaluate
+  #   count     -> cuenta sobre cada video, escribe counts.json
+  #   evaluate  -> cuenta y compara contra ground truth, escribe metrics.json
+strategy:
+  tiled_crossing # line_crossing | tiled_crossing | embeddings
+  #   tiled_crossing -> franja central partida en 2 tiles, tracking y conteo por tile
+runtime: modal # localhost | modal  (modal requiere el token de Modal configurado)
+device: gpu # gpu | cpu
+render: true # escribe un .mp4 con los 2 tiles anotados apilados verticalmente
+dataset: data/blueberry-counting/manifest.yaml # ruta al manifest.yaml del dataset
+
+model:
+  # detector_weights: models/video-labeler/yolov8m.pt # pesos YOLO (.pt)
+  detector_weights: models/yolov8m_blueberry.pt # pesos YOLO (.pt)
+
+
+
+# --- params para strategy: tiled_crossing ---
+params:
+  direction: left2right # left2right | right2left (la linea es vertical, en el centro del tile)
+  conf_threshold: 0.3 # confianza minima de las detecciones YOLO

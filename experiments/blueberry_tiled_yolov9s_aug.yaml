@@ -1,0 +1,15 @@
+name: blueberry_tiled_yolov9s_aug # tiled_crossing con yolov9s re-entrenado con augmentations agresivas
+type: evaluate
+strategy: tiled_crossing
+runtime: modal
+device: gpu
+render: false
+dataset: data/blueberry-counting/manifest.yaml
+
+model:
+  detector_weights: models/yolov9s_aug_blueberry.pt
+
+# --- params para strategy: tiled_crossing ---
+params:
+  direction: left2right
+  conf_threshold: 0.15

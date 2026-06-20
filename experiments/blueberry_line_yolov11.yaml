@@ -1,0 +1,18 @@
+name: blueberry_line_yolov11 # line_crossing sobre los 4 detectores yolov11 blueberry
+type: evaluate
+strategy: line_crossing
+runtime: modal
+device: gpu
+render: false
+dataset: data/blueberry-counting/manifest.yaml
+
+model:
+  detector_weights: models/yolov11n_blueberry.pt, models/yolov11s_blueberry.pt, models/yolov11m_blueberry.pt, models/yolov11l_blueberry.pt
+
+# --- params para strategy: line_crossing ---
+params:
+  count_mode: horizontal
+  threshold: 0.5
+  direction: left2right
+  conf_threshold: 0.15
+  crop: center_square

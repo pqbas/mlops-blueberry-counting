@@ -1,0 +1,16 @@
+name: blueberry_tiled_yolov9s_conf # ablation: sensibilidad de conf_threshold en tiled + yolov9s
+type: evaluate
+strategy: tiled_crossing
+runtime: modal
+device: gpu
+render: false
+dataset: data/blueberry-counting/manifest.yaml
+
+model:
+  detector_weights: models/yolov9s_blueberry.pt
+
+# --- params para strategy: tiled_crossing ---
+# conf_threshold sweepable: un trial por valor (6 trials)
+params:
+  direction: left2right
+  conf_threshold: 0.05, 0.10, 0.15, 0.20, 0.30, 0.40

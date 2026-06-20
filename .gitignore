@@ -1,0 +1,14 @@
+runs/
+__pycache__/
+*.pyc
+.venv/
+
+data/*/
+!data/.gitkeep
+data/*.zip
+
+models/*
+!models/.gitkeep
+
+# Ultralytics auto-downloaded base weights
+/*.pt

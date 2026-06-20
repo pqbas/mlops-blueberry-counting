@@ -1,0 +1,18 @@
+name: blueberry_line_v9c # baseline line_crossing para la comparacion vs tiled
+type: evaluate # cuenta y compara contra ground truth, escribe metrics.json
+strategy: line_crossing # YOLO con tracking nativo + conteo por cruce de linea
+runtime: modal # localhost | modal
+device: gpu # gpu | cpu
+render: false # solo interesan los numeros para la comparacion
+dataset: data/blueberry-counting/manifest.yaml
+
+model:
+  detector_weights: models/yolov9c_blueberry.pt # mismo detector que el run tiled, comparacion justa
+
+# --- params para strategy: line_crossing ---
+params:
+  count_mode: horizontal # eje x
+  threshold: 0.5 # linea de conteo en el centro del frame
+  direction: left2right
+  conf_threshold: 0.15
+  crop: center_square # cuadrado central, igual base que tiled

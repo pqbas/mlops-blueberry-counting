@@ -1,0 +1,44 @@
+name: example # identificador del experimento, define la subcarpeta runs/<name>/
+type:
+  evaluate # count | evaluate
+  #   count     -> cuenta sobre cada video, escribe counts.json
+  #   evaluate  -> cuenta y compara contra ground truth, escribe metrics.json
+strategy:
+  line_crossing # line_crossing | embeddings
+  #   line_crossing -> YOLO con tracking + conteo por cruce de linea
+  #   embeddings    -> YOLO detect + recorte + matching por embeddings
+runtime: localhost # localhost | modal  (modal requiere el token de Modal configurado)
+device: gpu # gpu | cpu
+render: false # true escribe un .mp4 anotado por video en renders/ (solo line_crossing)
+dataset: data/blueberry-counting/manifest.yaml # ruta al manifest.yaml del dataset
+
+model:
+  detector_weights: models/yolov8n_blueberry.pt # pesos YOLO (.pt)
+  # encoder_weights: models/embeddings_v1.pt     # pesos del encoder, requerido si strategy=embeddings
+
+# --- params para strategy: line_crossing ---
+params:
+  count_mode: vertical # vertical (eje y) | horizontal (eje x)
+  threshold: 0.5 # posicion normalizada [0,1] de la linea de conteo
+  direction: top2down # top2down | down2top  (vertical) -- left2right | right2left (horizontal)
+  conf_threshold: 0.25 # confianza minima de las detecciones YOLO
+  crop: none # none | center_square (recorta un cuadrado central, lado = alto del frame, antes de YOLO)
+
+# --- params para strategy: embeddings (reemplaza el bloque params de arriba) ---
+# params:
+#   region: 0.0,0.45,1.0,0.55  # x1,y1,x2,y2 normalizado de la region de conteo
+#   conf_threshold: 0.25       # confianza minima de las detecciones YOLO
+#   crop_padding: 0.5          # padding fraccional del recorte (debe coincidir con el entrenamiento)
+#   similarity_threshold: 0.5  # corte de similitud coseno para hacer match con un track activo
+#   max_staleness: 2           # frames que un track aguanta sin match antes de descartarse
+#   min_track_length: 2        # minimo de frames para que un track cuente como identidad unica
+
+# Sweeps: los params escalares aceptan varios valores separados por coma. Se
+# ejecuta un trial por cada combinacion (producto cartesiano). 'region' no es
+# sweepable porque su propio valor ya es una lista x1,y1,x2,y2.
+# Ejemplo:  threshold: 0.4,0.5,0.6  -> 3 trials, uno por threshold.
+#
+# Keys sweepables por estrategia:
+#   line_crossing -> count_mode, threshold, direction, conf_threshold, crop
+#   embeddings    -> conf_threshold, crop_padding, similarity_threshold,
+#                    max_staleness, min_track_length

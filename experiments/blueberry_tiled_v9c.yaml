@@ -1,0 +1,15 @@
+name: blueberry_tiled_v9c # tiled_crossing para la comparacion vs line_crossing
+type: evaluate # cuenta y compara contra ground truth, escribe metrics.json
+strategy: tiled_crossing # franja central partida en 2 tiles, tracking y conteo por tile
+runtime: modal # localhost | modal
+device: gpu # gpu | cpu
+render: false # solo interesan los numeros para la comparacion
+dataset: data/blueberry-counting/manifest.yaml
+
+model:
+  detector_weights: models/yolov9c_blueberry.pt # mismo detector que el run line_crossing, comparacion justa
+
+# --- params para strategy: tiled_crossing ---
+params:
+  direction: left2right
+  conf_threshold: 0.15

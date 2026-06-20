@@ -1,0 +1,25 @@
+name: blueberry_embeddings_sweep # identificador del experimento, define la subcarpeta runs/<name>/
+type:
+  evaluate # count | evaluate
+  #   evaluate -> cuenta y compara contra ground truth, escribe metrics.json
+strategy:
+  embeddings # line_crossing | tiled_crossing | embeddings
+runtime: modal # localhost | modal  (modal requiere el token de Modal configurado)
+device: gpu # gpu | cpu
+render: false # sin render: 36 trials x 6 videos seria demasiado
+dataset: data/blueberry-counting/manifest.yaml # ruta al manifest.yaml del dataset
+
+model:
+  detector_weights: models/video-labeler/yolov9m.pt # best_yolov9m.pt (mismos bytes)
+  encoder_weights: models/embeddings_v1.pt # pesos del encoder de embeddings
+
+# --- params para strategy: embeddings ---
+# Sweep: 2 x 1 x 3 x 2 x 3 = 36 trials (producto cartesiano).
+# region no es sweepable (su valor ya es una lista x1,y1,x2,y2).
+params:
+  region: 0.39,0.0,0.61,1.0 # x1,y1,x2,y2 normalizado de la region de conteo
+  conf_threshold: 0.10,0.15 # confianza minima de las detecciones YOLO
+  crop_padding: 0.5 # padding fraccional del recorte (fijo)
+  similarity_threshold: 0.5,0.6,0.7 # corte de similitud coseno para match
+  max_staleness: 2,4 # frames que un track aguanta sin match
+  min_track_length: 3,5,7 # minimo de frames para contar como identidad unica

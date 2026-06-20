@@ -1,0 +1,25 @@
+name: blueberry_embeddings # identificador del experimento, define la subcarpeta runs/<name>/
+type:
+  evaluate # count | evaluate
+  #   count     -> cuenta sobre cada video, escribe counts.json
+  #   evaluate  -> cuenta y compara contra ground truth, escribe metrics.json
+strategy:
+  embeddings # line_crossing | tiled_crossing | embeddings
+  #   embeddings -> YOLO detect + recorte + matching por embeddings (identidades unicas)
+runtime: modal # localhost | modal  (modal requiere el token de Modal configurado)
+device: gpu # gpu | cpu
+render: false # true escribe un .mp4 anotado por video en renders/
+dataset: data/blueberry-counting/manifest.yaml # ruta al manifest.yaml del dataset
+
+model:
+  detector_weights: models/video-labeler/yolov9m.pt # best_yolov9m.pt (mismos bytes)
+  encoder_weights: models/embeddings_v1.pt # pesos del encoder de embeddings
+
+# --- params para strategy: embeddings ---
+params:
+  region: 0.39,0.0,0.61,1.0 # x1,y1,x2,y2 normalizado de la region de conteo
+  conf_threshold: 0.12,0.15,0.18 # confianza minima de las detecciones YOLO
+  crop_padding: 0.5 # padding fraccional del recorte (debe coincidir con el entrenamiento)
+  similarity_threshold: 0.6 # corte de similitud coseno para hacer match con un track activo
+  max_staleness: 2 # frames que un track aguanta sin match antes de descartarse
+  min_track_length: 6 # minimo de frames para que un track cuente como identidad unica

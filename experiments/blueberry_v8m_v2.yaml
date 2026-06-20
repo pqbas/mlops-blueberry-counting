@@ -1,0 +1,25 @@
+name: blueberry_v8m_v2 # identificador del experimento, define la subcarpeta runs/<name>/
+type:
+  evaluate # count | evaluate
+  #   count     -> cuenta sobre cada video, escribe counts.json
+  #   evaluate  -> cuenta y compara contra ground truth, escribe metrics.json
+strategy:
+  line_crossing # line_crossing | embeddings
+  #   line_crossing -> YOLO con tracking + conteo por cruce de linea
+  #   embeddings    -> YOLO detect + recorte + matching por embeddings
+runtime: modal # localhost | modal  (modal requiere el token de Modal configurado)
+device: gpu # gpu | cpu
+render: true # escribe un .mp4 anotado por video en renders/ (solo line_crossing)
+dataset: data/blueberry-counting/manifest.yaml # ruta al manifest.yaml del dataset
+
+model:
+  detector_weights: models/yolov8m_blueberry.pt # mejor detector por mAP50-95 (0.483)
+  # encoder_weights: models/embeddings_v1.pt     # requerido si strategy=embeddings
+
+# --- params para strategy: line_crossing ---
+params:
+  count_mode: horizontal # vertical (eje y) | horizontal (eje x)
+  threshold: 0.5 # posicion normalizada [0,1] de la linea de conteo
+  direction: left2right # top2down | down2top  (vertical) -- left2right | right2left (horizontal)
+  conf_threshold: 0.15 # confianza minima de las detecciones YOLO
+  crop: center_square # none | center_square (cuadrado central, lado = alto del frame)
