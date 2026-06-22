@@ -1,8 +1,16 @@
-# counting-mlops
+# blueberry-counting
 
-Operaciones simples de MLOps para estrategias de conteo de objetos en video.
-Cada experimento se define en un archivo YAML y se ejecuta con un único comando,
-en `localhost` o en Modal.
+Conteo automático de arándanos en video con YOLO y tracking, pensado para
+estimar producción en campo sin conteo manual. Compara estrategias y 20
+detectores entrenados en arándanos: la mejor combinación, `tiled_crossing` +
+`yolov9s`, llega a **21.6% de MAE**, partiendo la franja central del frame en
+tiles para recuperar arándanos que el detector pierde en escena densa.
+
+<!-- TODO: reemplazar por un GIF real del conteo sobre un video (assets/demo.gif) -->
+<!-- ![demo](assets/demo.gif) -->
+
+Por debajo es un framework simple de MLOps: cada experimento se define en un
+archivo YAML y se ejecuta con un único comando, en `localhost` o en Modal.
 
 ## Operaciones soportadas
 
